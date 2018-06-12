@@ -1,3 +1,5 @@
+import pygame.font
+
 from big_screen import BigScreen
 
 class MsgBoard():
@@ -7,17 +9,57 @@ class MsgBoard():
 		self.posO = self.ai_settings.ms_o
 		self.screen = screen
 		self.stats = stats
-		self.shape_num = brick.nxt_shape_num
+		self.brick = brick
+		
+		self.set_shape()
+		
+		self.init_nb_screen()
+		
+		self.text_color = (255,255,255)
+		self.text_font = pygame.font.SysFont('lucidaconsole', 16,
+			bold = True)
+			
+		self.info_pos = (150,90)
+		self.info_x = self.info_pos[0] 
+		self.info_y = self.info_pos[1]
+		
+	def set_shape(self):
+		self.shape_num = self.brick.nxt_shape_num
 		self.shape = self.ai_settings.shape_list[self.shape_num]
+		self.color = self.ai_settings.color_list[self.shape_num]
+				
+	def init_nb_screen(self):
+		self.nb_screen = BigScreen(self.ai_settings, self.screen)
+		self.nb_screen.set_screen_pos((185,10))
+		self.nb_screen.set_screen_scale(6,6)
 		
 	def show_nxt_brick(self):
-		if self.shape_num >= 0:
-			nb_screen = BigScreen(self.ai_settings, self.screen)
-			nb_screen.set_screen_pos((160,0))
-			nb_screen.set_screen_scale(4,4)
-			for piece in self.shape:
-				nb_screen.set_pixel(piece[0]+2, piece[1]+2, True)
-			nb_screen.draw_screen()
+		self.nb_screen.clear_screen()
+		self.set_shape()
+		for piece in self.shape:
+			self.nb_screen.set_pixel(piece[0]+2, piece[1]+2, 
+				True, self.color)
+	
+	def show_msg(self, msg_list=['']):
+		last_bottom = self.info_y
+		for msg_str in msg_list:
+			msg_image = self.text_font.render(msg_str, 
+				False, self.text_color, self.ai_settings.bg_color)
+		
+			msg_rect = msg_image.get_rect()
+			msg_rect.centerx = self.ai_settings.ms_centerx
+			msg_rect.top = last_bottom+5
+			last_bottom = msg_rect.bottom
+			self.screen.blit(msg_image, msg_rect)
+			
+	def show_info(self):
+		# show score and high score of current game
+		score_str = 'Score:' + str(self.stats.score)
+		level_str = 'level:' + str(self.stats.level)
+		high_str = 'Record:' + str(self.stats.high_score)
+		msg_list = [score_str, level_str, high_str]
+		self.show_msg(msg_list)
+		
 		
 		
 		

@@ -8,6 +8,7 @@ from game_stats import GameStats
 from brick import Brick
 from foundation import Foundation
 from msg_board import MsgBoard
+from button import Button
 
 def run_game():
 	pygame.init()
@@ -26,11 +27,14 @@ def run_game():
 	
 	msg_b = MsgBoard(ai_settings, screen, stats, brick)
 	
+	play_button = Button(ai_settings, screen, stats, 'START', 180)
+	
 	while True:
-		gf.check_events(ai_settings, screen, brick)
+		gf.check_events(ai_settings, screen, brick, play_button)
 		if brick.stats.game_active:
 			brick.update()
-			msg_b.shape_num = brick.nxt_shape_num
-		gf.update_screen(ai_settings, screen, game_screen, brick, msg_b)
+			msg_b.show_nxt_brick()
+		gf.update_screen(ai_settings, screen, game_screen, brick, msg_b,
+			play_button)
 	
 run_game()

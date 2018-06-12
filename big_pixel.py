@@ -24,7 +24,7 @@ class BigPixel():
 	def set_O_pos(self, posO=(0,0)):
 		self.pos_o = posO
 		self.o_x = posO[0]
-		self.o_y = posO[0]	
+		self.o_y = posO[1]	
 			
 	def set_color(self, new_color=(255,255,255)):
 		self.color = new_color

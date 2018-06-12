@@ -12,7 +12,16 @@ class Settings():
 		self.init_msg_screen()
 		self.init_screen()
 		
-		self.brick_color = (255,255,255)
+		self.color_list = [
+			(255,92,89),
+			(197,0,197),
+			(80,80,255),
+			(74,255,74),
+			(255,255,0),
+			(255,165,0),
+			(127,187,207)
+			]
+			
 		self.shape_list = [
 			[(-1,0),(0,0),(1,0),(2,0)],
 			[(-1,0),(0,0),(1,0),(1,1)],
@@ -24,8 +33,12 @@ class Settings():
 		
 		self.rotate_list = [0,1,-1,0]	
 		
-		self.init_game_speed()
-			
+		self.init_dynamic_settings()
+		
+		self.acc_factor = 0.75
+		self.game_ff_speed = 30
+		self.ctl_moving_speed = 250	
+		
 	def init_game_screen(self):
 		# game screen (gs) settings
 		self.gs_width_p = 10
@@ -43,12 +56,21 @@ class Settings():
 		self.ms_width = 140
 		self.ms_height = 0
 		self.ms_o = (self.gs_width,0)
+		self.ms_centerx = 217
 		
 	def init_screen(self):
 		self.screen_width = self.gs_width + self.ms_width
 		self.screen_height = self.gs_height
-			
+		
+	def init_dynamic_settings(self):
+		self.init_game_speed()
+		
 	def init_game_speed(self):
 		self.game_speed = 1000
-		self.game_ff_speed = 50
-		self.ctl_moving_speed = 500		
+	
+	def update_game_speed(self, acc_factor=1):
+		if acc_factor != 1:
+			self.acc_factor = acc_factor
+		new_speed = int(self.game_speed * self.acc_factor)
+		self.game_speed = new_speed
+

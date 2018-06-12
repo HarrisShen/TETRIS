@@ -19,11 +19,8 @@ class Brick():
 		
 		self.stats = stats
 		self.fund = fund
-		
-		self.color = (255,255,255)
 
-		self.shape_num = random.randint(0,6)
-		self.nxt_shape_num = self.shape_num
+		self.nxt_shape_num = random.randint(0,6)
 		self.create_new()
 		
 		self.set_dir_key()
@@ -41,6 +38,7 @@ class Brick():
 		self.shape_num = self.nxt_shape_num
 		self.nxt_shape_num = random.randint(0,6)
 		self.shape = self.ai_settings.shape_list[self.shape_num]
+		self.color = self.ai_settings.color_list[self.shape_num]
 		self.get_piece_pos()
 		
 		self.cnt = 0
@@ -68,7 +66,8 @@ class Brick():
 		
 	def draw_brick(self):
 		for piece in self.piece_pos:
-			self.b_screen.set_pixel(piece[0], piece[1], True)
+			self.b_screen.set_pixel(piece[0], piece[1], True,
+				self.color)
 			
 	def brick_fall(self):
 		if self.free_fall:
@@ -77,9 +76,10 @@ class Brick():
 			speed = self.ai_settings.game_speed
 		if self.cnt >= speed:
 			if self.touch:
-				self.fund.add_pieces(self.piece_pos)
+				self.fund.add_pieces(self.piece_pos, self.color)
 				self.fund.clear_full()
 				self.create_new()
+				self.if_touch()
 				if self.if_touch_base():
 					self.stats.game_over = True
 					self.stats.game_active = False
@@ -207,7 +207,8 @@ class Brick():
 				
 	def draw_fund(self):
 		for base_piece in self.fund.piece_list:
-			self.b_screen.set_pixel(base_piece[0], base_piece[1], True)
+			self.b_screen.set_pixel(base_piece[0], base_piece[1], 
+				True, self.fund.color_list[base_piece])
 			
 	def update(self):
 		self.b_screen.clear_screen()
