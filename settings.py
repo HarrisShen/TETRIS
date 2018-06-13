@@ -33,11 +33,16 @@ class Settings():
 		
 		self.rotate_list = [0,1,-1,0]	
 		
+		self.dif = 3
+		self.speed_list = [1000, 850, 550, 300]
+		self.dif_list = ['easy', 'medium', 'hard', 'hell']
+		
 		self.init_dynamic_settings()
 		
 		self.acc_factor = 0.75
 		self.game_ff_speed = 30
-		self.ctl_moving_speed = 250	
+		self.ctl_rotating_speed = 250
+		self.ctl_moving_speed = 180	
 		
 	def init_game_screen(self):
 		# game screen (gs) settings
@@ -66,7 +71,8 @@ class Settings():
 		self.init_game_speed()
 		
 	def init_game_speed(self):
-		self.game_speed = 1000
+		self.game_speed = self.speed_list[self.dif]
+		self.game_dif = self.dif_list[self.dif]
 	
 	def update_game_speed(self, acc_factor=1):
 		if acc_factor != 1:

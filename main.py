@@ -27,14 +27,19 @@ def run_game():
 	
 	msg_b = MsgBoard(ai_settings, screen, stats, brick)
 	
-	play_button = Button(ai_settings, screen, stats, 'START', 180)
+	first_button = Button(ai_settings, screen, stats, '', 170)
+	second_button = Button(ai_settings, screen, stats, '', 0)
+	second_button.update_top(first_button.frame_rect.bottom+5)
+	quit_button = Button(ai_settings, screen, stats, 'QUIT', 0)
+	quit_button.update_top(second_button.frame_rect.bottom+5)
 	
 	while True:
-		gf.check_events(ai_settings, screen, brick, play_button)
+		gf.check_events(ai_settings, screen, brick, first_button,
+			second_button, quit_button)
 		if brick.stats.game_active:
 			brick.update()
 			msg_b.show_nxt_brick()
 		gf.update_screen(ai_settings, screen, game_screen, brick, msg_b,
-			play_button)
+			first_button, second_button, quit_button)
 	
 run_game()

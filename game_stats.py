@@ -3,7 +3,7 @@ class GameStats():
 	def __init__(self):
 		self.high_score = 0
 		self.game_active = False
-		self.game_over = False
+		self.game_over = True
 		
 		self.init_dynamic_stats()
 		
@@ -24,9 +24,8 @@ class GameStats():
 			elif self.score < 40:
 				if self.score % 10 == 0:
 					self.level += 1
-					ai_settings.update_game_speed(0.8)
+					ai_settings.update_game_speed(0.85)
 			elif self.score >= 40:
 				if self.score % 20 == 0:
 					self.level += 1
-					ai_settings.update_game_speed(0.8)
-
+					ai_settings.update_game_speed(0.95)

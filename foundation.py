@@ -63,4 +63,3 @@ class Foundation():
 		for piece in self.piece_list:
 			self.b_screen.set_pixel(piece[0], piece[1], 
 				True, self.color_list[piece])
-			

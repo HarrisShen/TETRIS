@@ -22,9 +22,6 @@ class Brick():
 
 		self.nxt_shape_num = random.randint(0,6)
 		self.create_new()
-		
-		self.set_dir_key()
-		self.moving_cnt = self.ai_settings.ctl_moving_speed
 	
 	def	set_screen(self):
 		self.b_screen.set_screen_pos(self.ai_settings.gs_pixel_o)
@@ -45,6 +42,9 @@ class Brick():
 		self.touch = False
 		
 		self.free_fall = False
+		
+		self.set_dir_key()
+		self.moving_cnt = self.ai_settings.ctl_rotating_speed		
 		
 	def set_pos(self, x=4, y=0):
 		self.pos = (x, y)
@@ -169,7 +169,7 @@ class Brick():
 
 	def update_pos(self):
 		if self.moving_left:
-			if self.moving_cnt == self.ai_settings.ctl_moving_speed:
+			if self.moving_cnt >= self.ai_settings.ctl_moving_speed:
 				if not self.touch_side():
 					self.set_pos(self.x-1, self.y)
 					self.get_piece_pos()
@@ -178,7 +178,7 @@ class Brick():
 			else:
 				self.moving_cnt += 1
 		if self.moving_right:
-			if self.moving_cnt == self.ai_settings.ctl_moving_speed:
+			if self.moving_cnt >= self.ai_settings.ctl_moving_speed:
 				if not self.touch_side(False):
 					self.set_pos(self.x+1, self.y)
 					self.get_piece_pos()
@@ -187,7 +187,7 @@ class Brick():
 			else:
 				self.moving_cnt += 1
 		if self.moving_down:
-			if self.moving_cnt == self.ai_settings.ctl_moving_speed:
+			if self.moving_cnt >= self.ai_settings.ctl_moving_speed:
 				self.if_touch()
 				if not self.touch:
 					self.set_pos(self.x, self.y+1)
@@ -197,7 +197,7 @@ class Brick():
 			else:
 				self.moving_cnt += 1								
 		if self.rotating:
-			if self.moving_cnt == self.ai_settings.ctl_moving_speed:
+			if self.moving_cnt == self.ai_settings.ctl_rotating_speed:
 				if self.rotatable():
 					self.rotate()
 					self.if_touch()

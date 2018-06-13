@@ -16,10 +16,10 @@ class MsgBoard():
 		self.init_nb_screen()
 		
 		self.text_color = (255,255,255)
-		self.text_font = pygame.font.SysFont('lucidaconsole', 16,
+		self.text_font = pygame.font.SysFont('lucidaconsole', 15,
 			bold = True)
 			
-		self.info_pos = (150,90)
+		self.info_pos = (152,90)
 		self.info_x = self.info_pos[0] 
 		self.info_y = self.info_pos[1]
 		
@@ -48,18 +48,15 @@ class MsgBoard():
 		
 			msg_rect = msg_image.get_rect()
 			msg_rect.centerx = self.ai_settings.ms_centerx
-			msg_rect.top = last_bottom+5
+			msg_rect.top = last_bottom+3
 			last_bottom = msg_rect.bottom
 			self.screen.blit(msg_image, msg_rect)
 			
 	def show_info(self):
 		# show score and high score of current game
 		score_str = 'Score:' + str(self.stats.score)
-		level_str = 'level:' + str(self.stats.level)
+		level_str = 'Level:' + str(self.stats.level)
+		dif_str = 'Mode:' + self.ai_settings.game_dif.title()
 		high_str = 'Record:' + str(self.stats.high_score)
-		msg_list = [score_str, level_str, high_str]
+		msg_list = [score_str, level_str, dif_str, high_str]
 		self.show_msg(msg_list)
-		
-		
-		
-		

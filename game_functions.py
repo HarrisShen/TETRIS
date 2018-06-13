@@ -5,7 +5,8 @@ from big_pixel import BigPixel
 from big_screen import BigScreen
 from brick import Brick
 
-def check_events(ai_settings, screen, brick, play_button):
+def check_events(ai_settings, screen, brick, first_button,
+	second_button, quit_button):
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			sys.exit()
@@ -13,20 +14,26 @@ def check_events(ai_settings, screen, brick, play_button):
 			button1, button2, button3 = pygame.mouse.get_pressed()
 			if button1:
 				mouse_x, mouse_y = pygame.mouse.get_pos()
-				if not brick.stats.game_active:
-					check_play_button(mouse_x, mouse_y, ai_settings,
-						screen, brick, play_button)
+				check_mouse_events(mouse_x, mouse_y, ai_settings,
+					screen, brick, first_button, second_button,
+					quit_button)
 		elif event.type == pygame.KEYDOWN:
 			check_keydown_events(event, ai_settings, screen, brick)
 		elif event.type == pygame.KEYUP:
 			check_keyup_events(event, brick)
 			
-def check_play_button(mouse_x, mouse_y, ai_settings, screen, brick,
-	play_button):
-	if play_button.rect.collidepoint(mouse_x, mouse_y):
-		brick.stats.game_active = True
-		if brick.stats.game_over:
+def check_mouse_events(mouse_x, mouse_y, ai_settings, screen, brick,
+	first_button, second_button, quit_button):
+	if first_button.rect.collidepoint(mouse_x, mouse_y):
+		if not brick.stats.game_over:
+			brick.stats.game_active = not brick.stats.game_active
+		elif brick.stats.game_over:
 			reset_game(ai_settings, screen, brick)
+	elif second_button.rect.collidepoint(mouse_x, mouse_y):
+		if not brick.stats.game_over:
+			reset_game(ai_settings, screen, brick)
+	elif quit_button.rect.collidepoint(mouse_x, mouse_y):
+		sys.exit()
 		
 def check_keydown_events(event, ai_settings, screen, brick):
 	if event.key == pygame.K_q:
@@ -53,22 +60,22 @@ def check_keyup_events(event, brick):
 	if event.key == pygame.K_LEFT:
 		brick.moving_left = False
 		brick.moving_cnt =\
-			brick.ai_settings.ctl_moving_speed
+			brick.ai_settings.ctl_rotating_speed
 	elif event.key == pygame.K_RIGHT:
 		brick.moving_right = False
 		brick.moving_cnt =\
-			brick.ai_settings.ctl_moving_speed
+			brick.ai_settings.ctl_rotating_speed
 	elif event.key == pygame.K_DOWN:
 		brick.moving_down = False
 		brick.moving_cnt =\
-			brick.ai_settings.ctl_moving_speed
+			brick.ai_settings.ctl_rotating_speed
 	if event.key == pygame.K_UP:
 		brick.rotating = False
 		brick.moving_cnt =\
-			brick.ai_settings.ctl_moving_speed
+			brick.ai_settings.ctl_rotating_speed
 											
 def update_screen(ai_settings, screen, b_screen, brick, mb,
-	play_button):
+	first_button, second_button, quit_button):
 	screen.fill(ai_settings.bg_color)
 	brick.b_screen.draw_screen()
 	mb.nb_screen.draw_screen()
@@ -76,10 +83,35 @@ def update_screen(ai_settings, screen, b_screen, brick, mb,
 	draw_next_brick_frame(ai_settings, screen)
 	mb.show_info()
 	
-	if not brick.stats.game_active:
-		play_button.draw_button()
+	update_first_button(brick, first_button)
+	update_second_button(brick, second_button)
+	update_quit_button(brick, quit_button)
+	first_button.draw_button()
+	second_button.draw_button()
+	quit_button.draw_button()
 	
 	pygame.display.flip()
+
+def update_first_button(brick, first_button):
+	if brick.stats.game_over:
+		first_button.update_msg('START')
+	else:
+		if brick.stats.game_active:
+			first_button.update_msg('PAUSE')
+		else:
+			first_button.update_msg('RESUME')
+			
+def update_second_button(brick, second_button):
+	if brick.stats.game_over:
+		second_button.update_msg('OPTIONS')
+	else:
+		second_button.update_msg('RESET')
+		
+def update_quit_button(brick, quit_button):
+	if brick.stats.game_over:
+		quit_button.update_msg('EXIT')
+	else:
+		quit_button.update_msg('QUIT')
 	
 def reset_game(ai_settings, screen, brick):
 	ai_settings.init_dynamic_settings()
@@ -89,6 +121,7 @@ def reset_game(ai_settings, screen, brick):
 	brick.fund.create_new()
 	
 	brick.stats.game_active = True
+	brick.stats.game_over = False
 	
 def draw_main_frame(ai_settings, screen):
 	t_line = pygame.Rect(4, 4, 139, 3)
