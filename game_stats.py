@@ -4,6 +4,7 @@ class GameStats():
 		self.high_score = 0
 		self.game_active = False
 		self.game_over = True
+		self.game_option = False
 		
 		self.init_dynamic_stats()
 		

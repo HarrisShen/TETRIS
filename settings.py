@@ -36,13 +36,21 @@ class Settings():
 		self.dif = 3
 		self.speed_list = [1000, 850, 550, 300]
 		self.dif_list = ['easy', 'medium', 'hard', 'hell']
+		self.dif_str = self.dif_list[self.dif]
 		
 		self.init_dynamic_settings()
 		
 		self.acc_factor = 0.75
 		self.game_ff_speed = 30
 		self.ctl_rotating_speed = 250
-		self.ctl_moving_speed = 180	
+		self.ctl_moving_speed = 130	
+		
+		self.scoring = 0
+		self.scor_list = ['simple', 'combo', 'multiple']
+		self.scor_str = self.scor_list[self.scoring]
+		
+		self.coloring = True
+		self.hint = True
 		
 	def init_game_screen(self):
 		# game screen (gs) settings
@@ -79,4 +87,41 @@ class Settings():
 			self.acc_factor = acc_factor
 		new_speed = int(self.game_speed * self.acc_factor)
 		self.game_speed = new_speed
-
+		
+	def get_option_text(self):
+		option_text = [self.dif_str, self.scor_str]
+		if self.coloring:
+			option_text.append('on')
+		else:
+			option_text.append('off')
+		if self.hint:
+			option_text.append('on')
+		else:
+			option_text.append('off')
+		return option_text
+		
+	def update_settings(self, item_i, status_i):
+		if item_i == 0:
+			if status_i == 0:
+				self.dif -= 1
+				if self.dif < 0:
+					self.dif = 3
+			elif status_i == 1:
+				self.dif += 1
+				if self.dif > 3:
+					self.dif = 0
+			self.dif_str = self.dif_list[self.dif]
+		elif item_i == 1:
+			if status_i == 0:
+				self.scoring -= 1
+				if self.scoring < 0:
+					self.scoring = 2
+			elif status_i == 1:
+				self.scoring += 1
+				if self.scoring > 2:
+					self.scoring = 0
+			self.scor_str = self.scor_list[self.scoring]
+		elif item_i == 2:
+			self.coloring = not self.coloring
+		elif item_i == 3:
+			self.hint = not self.hint

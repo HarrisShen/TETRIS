@@ -10,7 +10,7 @@ class Button():
 		self.msg = msg
 		self.top = top
 		
-		self.width, self.height = 86, 30
+		self.set_size()
 		self.button_color = ai_settings.bg_color
 		self.frame_color = ai_settings.frame_color
 		self.text_color = (255,255,255)
@@ -18,6 +18,9 @@ class Button():
 		
 		self.prep_button()
 		self.prep_msg(self.msg)
+	
+	def set_size(self, width=86, height=30):
+		self.width, self.height = width, height
 	
 	def prep_button(self):
 		self.frame_rect = pygame.Rect(0, 0, self.width, self.height)
@@ -45,6 +48,7 @@ class Button():
 		self.prep_msg(self.msg)
 				
 	def draw_button(self):
-		self.screen.fill(self.frame_color, self.frame_rect)
-		self.screen.fill(self.button_color, self.button_rect)
-		self.screen.blit(self.msg_image, self.msg_image_rect)
+		if self.msg:
+			self.screen.fill(self.frame_color, self.frame_rect)
+			self.screen.fill(self.button_color, self.button_rect)
+			self.screen.blit(self.msg_image, self.msg_image_rect)

@@ -9,6 +9,7 @@ from brick import Brick
 from foundation import Foundation
 from msg_board import MsgBoard
 from button import Button
+from option import Option
 
 def run_game():
 	pygame.init()
@@ -33,13 +34,15 @@ def run_game():
 	quit_button = Button(ai_settings, screen, stats, 'QUIT', 0)
 	quit_button.update_top(second_button.frame_rect.bottom+5)
 	
+	option = Option(ai_settings, screen, stats)
+	
 	while True:
-		gf.check_events(ai_settings, screen, brick, first_button,
-			second_button, quit_button)
+		gf.check_events(ai_settings, screen, brick, msg_b, first_button,
+			second_button, quit_button, option)
 		if brick.stats.game_active:
 			brick.update()
 			msg_b.show_nxt_brick()
 		gf.update_screen(ai_settings, screen, game_screen, brick, msg_b,
-			first_button, second_button, quit_button)
+			first_button, second_button, quit_button, option)
 	
 run_game()

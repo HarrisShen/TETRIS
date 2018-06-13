@@ -52,11 +52,11 @@ class MsgBoard():
 			last_bottom = msg_rect.bottom
 			self.screen.blit(msg_image, msg_rect)
 			
-	def show_info(self):
+	def show_info(self, ai_settings):
 		# show score and high score of current game
 		score_str = 'Score:' + str(self.stats.score)
 		level_str = 'Level:' + str(self.stats.level)
-		dif_str = 'Mode:' + self.ai_settings.game_dif.title()
+		dif_str = 'Mode:' + ai_settings.dif_str.title()
 		high_str = 'Record:' + str(self.stats.high_score)
 		msg_list = [score_str, level_str, dif_str, high_str]
 		self.show_msg(msg_list)
