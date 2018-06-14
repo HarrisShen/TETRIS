@@ -51,7 +51,6 @@ class Settings():
 		self.scor_list = ['simple', 'combo', 'multiple']
 		self.scor_str = self.scor_list[self.scoring]
 		
-		
 		self.hint = True
 		
 	def init_game_screen(self):
@@ -89,13 +88,17 @@ class Settings():
 		self.init_game_speed()
 		
 	def init_game_speed(self):
-		self.game_speed = self.speed_list[self.dif]
+		self.game_speed_first = self.speed_list[self.dif]
+		self.game_speed = self.game_speed_first
 		self.game_dif = self.dif_list[self.dif]
 	
-	def update_game_speed(self, acc_factor=1):
-		if acc_factor != 1:
-			self.acc_factor = acc_factor
-		new_speed = int(self.game_speed * self.acc_factor)
+	def update_game_speed(self, acc_factor=1, multi_factor=1):
+		new_speed = self.game_speed_first
+		while multi_factor > 0:
+			if acc_factor != 1:
+				self.acc_factor = acc_factor
+			new_speed = int(new_speed * self.acc_factor)
+			multi_factor -= 1
 		self.game_speed = new_speed
 		
 	def get_option_text(self):

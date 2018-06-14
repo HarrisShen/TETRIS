@@ -13,8 +13,6 @@ class Foundation():
 		self.stats = stats
 		
 		self.create_new()
-		# the lower the row, the higher the y-index
-		self.high_row = self.ai_settings.gs_height-1
 	
 	def create_new(self):
 		self.piece_list = []
@@ -24,13 +22,12 @@ class Foundation():
 		self.piece_list += piece_l
 		for piece in piece_l:
 			self.color_list[piece] = piece_color
-			if piece[1] < self.high_row:
-				self.highrow = piece[1]
 		
 	def clear_full(self):
 		# detect full rows and clear them
 		new_piece_list = []
 		new_color_list = {}
+		full_row_num = 0
 		row_index = self.y_max - 1
 		while row_index >= 0 :
 			cnt = 0
@@ -53,12 +50,21 @@ class Foundation():
 				new_piece_list = []
 				self.color_list = new_color_list
 				new_color_list = {}
+				full_row_num += 1
 				row_index += 1
-				self.stats.score += 1
-				self.stats.update_high()
-				self.stats.update_level(self.ai_settings)
 			row_index -= 1
-				
+		if full_row_num == 0:
+			self.stats.init_combo_stats()
+		elif full_row_num > 0:
+			if self.stats.in_combo:
+				self.stats.combo += 1
+			elif not self.stats.in_combo:
+				self.stats.in_combo = True
+		self.stats.update_score(self.ai_settings, full_row_num,
+			len(self.piece_list))
+		self.stats.update_high()
+		self.stats.update_level(self.ai_settings)
+					
 	def draw_self(self):
 		for piece in self.piece_list:
 			self.b_screen.set_pixel(piece[0], piece[1], 
