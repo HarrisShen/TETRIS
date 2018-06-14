@@ -12,7 +12,8 @@ class Settings():
 		self.init_msg_screen()
 		self.init_screen()
 		
-		self.color_list = [
+		self.coloring = True
+		self.colored_list = [
 			(255,92,89),
 			(197,0,197),
 			(80,80,255),
@@ -21,6 +22,7 @@ class Settings():
 			(255,165,0),
 			(127,187,207)
 			]
+		self.init_color()
 			
 		self.shape_list = [
 			[(-1,0),(0,0),(1,0),(2,0)],
@@ -33,7 +35,7 @@ class Settings():
 		
 		self.rotate_list = [0,1,-1,0]	
 		
-		self.dif = 3
+		self.dif = 0
 		self.speed_list = [1000, 850, 550, 300]
 		self.dif_list = ['easy', 'medium', 'hard', 'hell']
 		self.dif_str = self.dif_list[self.dif]
@@ -42,14 +44,14 @@ class Settings():
 		
 		self.acc_factor = 0.75
 		self.game_ff_speed = 30
-		self.ctl_rotating_speed = 250
-		self.ctl_moving_speed = 130	
+		self.ctl_rotating_speed = 240
+		self.ctl_moving_speed = 170	
 		
 		self.scoring = 0
 		self.scor_list = ['simple', 'combo', 'multiple']
 		self.scor_str = self.scor_list[self.scoring]
 		
-		self.coloring = True
+		
 		self.hint = True
 		
 	def init_game_screen(self):
@@ -75,6 +77,14 @@ class Settings():
 		self.screen_width = self.gs_width + self.ms_width
 		self.screen_height = self.gs_height
 		
+	def init_color(self):
+		self.color_list = []
+		if self.coloring:
+			self.color_list = self.colored_list
+		else:
+			for index in range(7):
+				self.color_list.append((255,255,255))
+			
 	def init_dynamic_settings(self):
 		self.init_game_speed()
 		
@@ -123,5 +133,6 @@ class Settings():
 			self.scor_str = self.scor_list[self.scoring]
 		elif item_i == 2:
 			self.coloring = not self.coloring
+			self.init_color()
 		elif item_i == 3:
 			self.hint = not self.hint

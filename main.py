@@ -41,7 +41,7 @@ def run_game():
 			second_button, quit_button, option)
 		if brick.stats.game_active:
 			brick.update()
-			msg_b.show_nxt_brick()
+			msg_b.show_nxt_brick(ai_settings)
 		gf.update_screen(ai_settings, screen, game_screen, brick, msg_b,
 			first_button, second_button, quit_button, option)
 	

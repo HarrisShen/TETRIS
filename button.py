@@ -18,6 +18,8 @@ class Button():
 		
 		self.prep_button()
 		self.prep_msg(self.msg)
+		
+		self.click_time = 0
 	
 	def set_size(self, width=86, height=30):
 		self.width, self.height = width, height

@@ -33,12 +33,13 @@ class MsgBoard():
 		self.nb_screen.set_screen_pos((185,10))
 		self.nb_screen.set_screen_scale(6,6)
 		
-	def show_nxt_brick(self):
-		self.nb_screen.clear_screen()
-		self.set_shape()
-		for piece in self.shape:
-			self.nb_screen.set_pixel(piece[0]+2, piece[1]+2, 
-				True, self.color)
+	def show_nxt_brick(self, ai_settings):
+		if ai_settings.hint:
+			self.nb_screen.clear_screen()
+			self.set_shape()
+			for piece in self.shape:
+				self.nb_screen.set_pixel(piece[0]+2, piece[1]+2, 
+					True, self.color)
 	
 	def show_msg(self, msg_list=['']):
 		last_bottom = self.info_y
