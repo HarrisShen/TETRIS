@@ -14,6 +14,7 @@ class Option():
 			ai_settings.gs_height)
 		
 		self.font = pygame.font.SysFont('lucidaconsole', 15, bold=True)
+		self.b_font = pygame.font.SysFont('arial', 15, bold=True)
 		self.color = (255,255,255)
 		self.bg_color = ai_settings.bg_color
 		
@@ -49,21 +50,35 @@ class Option():
 		for f_index in range(len(text_list)):
 			frame_rect = pygame.Rect(0,0, width, height)
 			frame_rect.center = self.center[f_index]
+			
 			left_cube = pygame.Rect(0,0, height, height)
 			left_cube.left = frame_rect.left
 			left_cube.centery = frame_rect.centery
 			self.cube.append(left_cube)
-			self.screen.fill(self.color, left_cube)
+			self.screen.fill(self.bg_color, left_cube)
+			
+			left_image = self.b_font.render(' < ', False, self.color,
+				self.bg_color)
+			left_image_rect = left_image.get_rect()
+			left_image_rect.center = left_cube.center
+			self.screen.blit(left_image, left_image_rect)
+			
 			right_cube = pygame.Rect(0,0, height, height)
 			right_cube.right = frame_rect.right
 			right_cube.centery = frame_rect.centery
 			self.cube.append(right_cube)
-			self.screen.fill(self.color, right_cube)
+			self.screen.fill(self.bg_color, right_cube)
+			
+			right_image = self.b_font.render(' > ', False, self.color,
+				self.bg_color)
+			right_image_rect = right_image.get_rect()
+			right_image_rect.center = right_cube.center
+			self.screen.blit(right_image, right_image_rect)
 			
 	def draw_options(self):
 		self.draw_text(self.title, self.top)
 		self.draw_text(self.text, self.top+20, True)
-		self.draw_frame(self.text, 120, 12)
+		self.draw_frame(self.text, 120, 15)
 		
 	def update_option(self, ai_settings):
 		self.ai_settings = ai_settings

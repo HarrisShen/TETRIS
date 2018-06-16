@@ -28,7 +28,7 @@ class Foundation():
 		new_piece_list = []
 		new_color_list = {}
 		full_row_num = 0
-		row_index = self.y_max - 1
+		row_index = self.y_max-1
 		while row_index >= 0 :
 			cnt = 0
 			for piece in self.piece_list:

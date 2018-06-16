@@ -65,6 +65,9 @@ class Settings():
 			self.gs_width_margin*2 - self.pixel_dist
 		self.gs_height = self.gs_height_p*self.pixel_step +\
 			self.gs_height_margin*2 - self.pixel_dist
+		self.gs_centerx, self.gs_centery = self.gs_width/2,\
+			self.gs_height/2
+		self.gs_center = (self.gs_centerx, self.gs_centery)
 			
 	def init_msg_screen(self):
 		self.ms_width = 140

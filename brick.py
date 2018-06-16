@@ -83,6 +83,7 @@ class Brick():
 				if self.if_touch_base():
 					self.stats.game_over = True
 					self.stats.game_active = False
+					self.stats.game_status = True
 					print('Game over. Score:' +str(self.stats.score))
 			else:
 				self.set_pos(self.x, self.y+1)
@@ -96,9 +97,8 @@ class Brick():
 	def if_touch_base(self):
 		flag = False
 		for piece in self.piece_pos:
-			for base_piece in self.fund.piece_list:
-				if piece == base_piece:
-					flag = True
+			if (piece in self.fund.piece_list):
+				flag = True
 		return flag
 		
 	def reach_bottom(self):
@@ -108,10 +108,8 @@ class Brick():
 	
 	def reach_base(self):
 		for piece in self.piece_pos:
-			for base_piece in self.fund.piece_list:
-				if piece[0] == base_piece[0] and\
-					piece[1] == base_piece[1]-1:
-					self.touch = True
+			if ((piece[0], piece[1]+1) in self.fund.piece_list):
+				self.touch = True
 					
 	def if_touch(self):
 		self.touch = False
@@ -124,18 +122,14 @@ class Brick():
 			for piece in self.piece_pos:
 				if piece[0] <= 0:
 					flag = True
-				for base_piece in self.fund.piece_list:
-					if piece[0] == base_piece[0]+1 and\
-						piece[1] == base_piece[1]:
-						flag = True
+				if ((piece[0]-1, piece[1]) in self.fund.piece_list):
+					flag = True
 		else:
 			for piece in self.piece_pos:
 				if piece[0] >= 9:
 					flag = True
-				for base_piece in self.fund.piece_list:
-					if piece[0] == base_piece[0] - 1 and\
-						piece[1] == base_piece[1]:
-						flag = True			
+				if ((piece[0]+1, piece[1]) in self.fund.piece_list):
+					flag = True		
 		return flag
 		
 	def rotate(self):
@@ -159,11 +153,9 @@ class Brick():
 				if new_piece[0] < 0 or new_piece[0] > 9 or\
 					new_piece[1] > 19:
 					flag = False
-				for base_piece in self.fund.piece_list:
-					if new_piece == base_piece:
-						flag = False
-						break
-				if flag == False:
+				if new_piece in self.fund.piece_list:
+					flag = False
+				if not flag:
 					break
 		return flag
 

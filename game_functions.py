@@ -30,6 +30,9 @@ def check_mouse_events(mouse_x, mouse_y, ai_settings, screen, brick,
 		else:
 			if not brick.stats.game_over:
 				brick.stats.game_active = not brick.stats.game_active
+				brick.stats.game_status = not brick.stats.game_status
+				msg_b.nb_screen.clear_screen()
+				brick.ai_settings.hint = not brick.ai_settings.hint
 			elif brick.stats.game_over:
 				reset_game(ai_settings, screen, brick)
 	elif second_button.rect.collidepoint(mouse_x, mouse_y):
@@ -39,6 +42,7 @@ def check_mouse_events(mouse_x, mouse_y, ai_settings, screen, brick,
 			brick.stats.game_option = True
 			brick.stats.game_active = False
 			brick.stats.game_over = True
+			brick.stats.game_status = False
 			brick.b_screen.clear_screen()
 			msg_b.nb_screen.clear_screen()
 	elif quit_button.rect.collidepoint(mouse_x, mouse_y):
@@ -47,6 +51,7 @@ def check_mouse_events(mouse_x, mouse_y, ai_settings, screen, brick,
 		else:
 			brick.stats.game_active = False
 			brick.stats.game_over = True
+			brick.stats.game_status = False
 			brick.b_screen.clear_screen()
 			msg_b.nb_screen.clear_screen()
 	elif brick.stats.game_option:
@@ -96,7 +101,7 @@ def check_keyup_events(event, brick):
 			brick.ai_settings.ctl_rotating_speed
 											
 def update_screen(ai_settings, screen, b_screen, brick, mb,
-	first_button, second_button, quit_button, option):
+	first_button, second_button, quit_button, stat_button, option):
 	screen.fill(ai_settings.bg_color)
 	brick.b_screen.draw_screen()
 	mb.nb_screen.draw_screen()
@@ -113,38 +118,52 @@ def update_screen(ai_settings, screen, b_screen, brick, mb,
 	
 	if brick.stats.game_option:
 		option.draw_options()
+		
+	if brick.stats.game_status:
+		update_status(brick, stat_button)
+		stat_button.draw_button()
 	
 	pygame.display.flip()
 
 def update_first_button(brick, first_button):
 	if brick.stats.game_option:
-		first_button.update_msg('OK')
+		first_button.update_msg(['OK'])
 	else:
 		if brick.stats.game_over:
-			first_button.update_msg('START')
+			first_button.update_msg(['START'])
 		else:
 			if brick.stats.game_active:
-				first_button.update_msg('PAUSE')
+				first_button.update_msg(['PAUSE'])
 			else:
-				first_button.update_msg('RESUME')
+				first_button.update_msg(['RESUME'])
 			
 def update_second_button(brick, second_button):
 	if brick.stats.game_option:
-		second_button.update_msg('')
+		second_button.update_msg([])
 	else:
 		if brick.stats.game_over:
-			second_button.update_msg('OPTIONS')
+			second_button.update_msg(['OPTIONS'])
 		else:
-			second_button.update_msg('RESET')
+			second_button.update_msg(['RESET'])
 		
 def update_quit_button(brick, quit_button):
 	if brick.stats.game_option:
-		quit_button.update_msg('')
+		quit_button.update_msg([])
 	else:
 		if brick.stats.game_over:
-			quit_button.update_msg('EXIT')
+			quit_button.update_msg(['EXIT'])
 		else:
-			quit_button.update_msg('QUIT')
+			quit_button.update_msg(['QUIT'])
+			
+def update_status(brick, stat_button):
+	if brick.stats.game_over:
+		stat_button.set_size(width=65, height=55)
+		stat_button.set_center(stat_button.ai_settings.gs_center)
+		stat_button.update_msg(['GAME','OVER'])
+	else:
+		stat_button.set_size(height=30)
+		stat_button.set_center(stat_button.ai_settings.gs_center)
+		stat_button.update_msg(['PAUSED'])
 	
 def reset_game(ai_settings, screen, brick):
 	ai_settings.init_dynamic_settings()
@@ -155,6 +174,7 @@ def reset_game(ai_settings, screen, brick):
 	
 	brick.stats.game_active = True
 	brick.stats.game_over = False
+	brick.stats.game_status = False
 	
 def draw_main_frame(ai_settings, screen):
 	t_line = pygame.Rect(4, 4, 139, 3)

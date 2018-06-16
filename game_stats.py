@@ -5,6 +5,7 @@ class GameStats():
 		self.game_active = False
 		self.game_over = True
 		self.game_option = False
+		self.game_status = False
 		
 		self.init_dynamic_stats()
 		
@@ -77,5 +78,5 @@ class GameStats():
 			elif self.score >= 100000:
 				# Lv.22 & higher
 				self.level = int(self.score/50000)+20
-			ai_settings.update_game_speed(0.90, self.level)
+			ai_settings.update_game_speed(0.90, int(self.level/3))
 			

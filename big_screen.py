@@ -9,7 +9,7 @@ class BigScreen():
 		self.set_screen_pos()
 		self.set_screen_scale()
 		
-		self.gen_pixel_list()
+		self.init_pixel_list()
 	
 	def set_screen_pos(self, pos=(0,0)):
 		self.pos = pos
@@ -19,9 +19,9 @@ class BigScreen():
 	def set_screen_scale(self, width=10, height=10):
 		self.width_pixel = width
 		self.height_pixel = height
-		self.gen_pixel_list()
+		self.init_pixel_list()
 			
-	def gen_pixel_list(self):
+	def init_pixel_list(self):
 		self.pixel_list = []
 		for x_index in range(self.width_pixel):
 			for y_index in range(self.height_pixel):
