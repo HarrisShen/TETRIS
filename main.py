@@ -22,11 +22,14 @@ def run_game():
 	
 	stats = GameStats()
 	
+	clock = pygame.time.Clock()
+	
 	fund = Foundation(ai_settings, screen, stats)
 	
-	brick = Brick(ai_settings, screen, game_screen, stats, fund)
+	brick = Brick(ai_settings, screen, game_screen, stats, clock,
+		 fund)
 	
-	msg_b = MsgBoard(ai_settings, screen, stats, brick)
+	msg_b = MsgBoard(ai_settings, screen, stats, brick, clock)
 	
 	first_button = Button(ai_settings, screen, stats, [], 170,
 		ai_settings.ms_centerx)
@@ -41,6 +44,8 @@ def run_game():
 	
 	stat_button = Button(ai_settings, screen, stats, [], 0, 0)
 	
+	gf.write_in_data('START '+gf.get_local_time()+'\n')
+	
 	while True:
 		gf.check_events(ai_settings, screen, brick, msg_b, first_button,
 			second_button, quit_button, option)
@@ -50,5 +55,6 @@ def run_game():
 		gf.update_screen(ai_settings, screen, game_screen, brick, msg_b,
 			first_button, second_button, quit_button, stat_button,
 			option)
+		clock.tick()
 	
 run_game()

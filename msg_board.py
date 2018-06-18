@@ -4,12 +4,13 @@ from big_screen import BigScreen
 
 class MsgBoard():
 	
-	def __init__(self, ai_settings, screen, stats, brick):
+	def __init__(self, ai_settings, screen, stats, brick, clock):
 		self.ai_settings = ai_settings
 		self.posO = self.ai_settings.ms_o
 		self.screen = screen
 		self.stats = stats
 		self.brick = brick
+		self.clock = clock
 		
 		self.set_shape()
 		
@@ -58,6 +59,6 @@ class MsgBoard():
 		score_str = 'Score:' + str(self.stats.score)
 		level_str = 'Level:' + str(self.stats.level)
 		dif_str = 'Mode:' + ai_settings.dif_str.title()
-		high_str = 'Record:' + str(self.stats.high_score)
-		msg_list = [score_str, level_str, dif_str, high_str]
+		fps_str = 'FPS:' + str(int(self.clock.get_fps()/100)*100)
+		msg_list = [score_str, level_str, dif_str, fps_str]
 		self.show_msg(msg_list)

@@ -1,4 +1,5 @@
 import random
+import time
 
 import pygame
 
@@ -10,7 +11,8 @@ from foundation import Foundation
 
 class Brick():
 	
-	def __init__(self, ai_settings, screen, b_screen, stats, fund):
+	def __init__(self, ai_settings, screen, b_screen, stats, clock,
+		fund):
 		self.ai_settings = ai_settings
 		self.screen = screen
 		
@@ -18,7 +20,10 @@ class Brick():
 		self.set_screen()
 		
 		self.stats = stats
+		self.clock = clock
 		self.fund = fund
+		
+		self.tick = 0
 
 		self.nxt_shape_num = random.randint(0,6)
 		self.create_new()
@@ -70,10 +75,11 @@ class Brick():
 				self.color)
 			
 	def brick_fall(self):
+		adj_factor = self.clock.get_fps()/1000
 		if self.free_fall:
-			speed = self.ai_settings.game_ff_speed
+			speed = self.ai_settings.game_ff_speed*adj_factor
 		else:
-			speed = self.ai_settings.game_speed
+			speed = self.ai_settings.game_speed*adj_factor
 		if self.cnt >= speed:
 			if self.touch:
 				self.fund.add_pieces(self.piece_pos, self.color)
@@ -84,9 +90,19 @@ class Brick():
 					self.stats.game_over = True
 					self.stats.game_active = False
 					self.stats.game_status = True
+					self.write_in_data('GAMEOVER '+\
+						self.get_local_time()+'\n')
 					print('Game over. Score:' +str(self.stats.score))
 			else:
 				self.set_pos(self.x, self.y+1)
+				if speed > 50:
+					int_pf = int(pygame.time.get_ticks()-self.tick)
+					data = str(pygame.time.get_ticks())+' '+str(int_pf)\
+						+' '+str(self.ai_settings.game_speed)
+					print(data)
+					self.write_in_data(data)
+					
+				self.tick = pygame.time.get_ticks()
 				self.get_piece_pos()
 				self.if_touch()
 			
@@ -208,3 +224,12 @@ class Brick():
 		self.brick_fall()
 		self.draw_brick()
 		self.draw_fund()
+		
+	def write_in_data(self, data):
+		filename = 'test_data.txt'
+		
+		with open(filename, 'a') as file_object:
+			file_object.write(str(data)+'\n')
+			
+	def get_local_time(self):
+		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())

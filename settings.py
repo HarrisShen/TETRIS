@@ -40,9 +40,11 @@ class Settings():
 		self.dif_list = ['easy', 'medium', 'hard', 'hell']
 		self.dif_str = self.dif_list[self.dif]
 		
+		self.hint_ctrl = True
+		
 		self.init_dynamic_settings()
 		
-		self.acc_factor = 0.75
+		self.acc_factor = 0.85
 		self.game_ff_speed = 30
 		self.ctl_rotating_speed = 240
 		self.ctl_moving_speed = 170	
@@ -50,9 +52,7 @@ class Settings():
 		self.scoring = 0
 		self.scor_list = ['simple', 'combo', 'multiple']
 		self.scor_str = self.scor_list[self.scoring]
-		
-		self.hint = True
-		
+
 	def init_game_screen(self):
 		# game screen (gs) settings
 		self.gs_width_p = 10
@@ -89,6 +89,10 @@ class Settings():
 			
 	def init_dynamic_settings(self):
 		self.init_game_speed()
+		if self.hint_ctrl:
+			self.hint = True
+		else:
+			self.hint = False
 		
 	def init_game_speed(self):
 		self.game_speed_first = self.speed_list[self.dif]
@@ -97,11 +101,9 @@ class Settings():
 	
 	def update_game_speed(self, acc_factor=1, multi_factor=1):
 		new_speed = self.game_speed_first
-		while multi_factor > 0:
-			if acc_factor != 1:
-				self.acc_factor = acc_factor
-			new_speed = int(new_speed * self.acc_factor)
-			multi_factor -= 1
+		if acc_factor != 1:
+			self.acc_factor = acc_factor
+		new_speed = int(new_speed * (self.acc_factor ** multi_factor))
 		self.game_speed = new_speed
 		
 	def get_option_text(self):
@@ -110,7 +112,7 @@ class Settings():
 			option_text.append('on')
 		else:
 			option_text.append('off')
-		if self.hint:
+		if self.hint_ctrl:
 			option_text.append('on')
 		else:
 			option_text.append('off')
@@ -141,4 +143,4 @@ class Settings():
 			self.coloring = not self.coloring
 			self.init_color()
 		elif item_i == 3:
-			self.hint = not self.hint
+			self.hint_ctrl = not self.hint_ctrl
