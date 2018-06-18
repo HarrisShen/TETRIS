@@ -1,6 +1,8 @@
 import sys
+import time
 
 import pygame
+
 from big_pixel import BigPixel
 from big_screen import BigScreen
 from brick import Brick
@@ -32,7 +34,7 @@ def check_mouse_events(mouse_x, mouse_y, ai_settings, screen, brick,
 				brick.stats.game_active = not brick.stats.game_active
 				brick.stats.game_status = not brick.stats.game_status
 				msg_b.nb_screen.clear_screen()
-				brick.ai_settings.hint = not brick.ai_settings.hint
+				ai_settings.hint = not ai_settings.hint
 			elif brick.stats.game_over:
 				reset_game(ai_settings, screen, brick)
 	elif second_button.rect.collidepoint(mouse_x, mouse_y):
@@ -63,7 +65,7 @@ def check_mouse_events(mouse_x, mouse_y, ai_settings, screen, brick,
 		
 def check_keydown_events(event, ai_settings, screen, brick):
 	if event.key == pygame.K_q:
-			sys.exit()
+		sys.exit()
 	elif event.key == pygame.K_RETURN:
 		if not brick.stats.game_over:
 			brick.stats.game_active = not brick.stats.game_active
@@ -203,3 +205,12 @@ def draw_next_brick_frame(ai_settings, screen):
 	b_line.left = t_line.left
 	b_line.bottom = l_line.bottom
 	pygame.draw.rect(screen, ai_settings.frame_color, b_line)
+
+def write_in_data(data):
+	filename = 'test_data.txt'
+		
+	with open(filename, 'a') as file_object:
+		file_object.write(str(data)+'\n')
+		
+def get_local_time():
+	return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())

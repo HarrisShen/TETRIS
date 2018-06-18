@@ -44,16 +44,13 @@ class GameStats():
 				if self.score < 10:
 					if self.score % 5 == 0:
 						self.level += 1
-						ai_settings.update_game_speed(multi_factor=\
-							self.level)
 				elif self.score < 40:
 					if self.score % 10 == 0:
 						self.level += 1
-						ai_settings.update_game_speed(0.85, self.level)
 				elif self.score >= 40:
 					if self.score % 20 == 0:
 						self.level += 1
-						ai_settings.update_game_speed(0.95, self.level)
+				ai_settings.update_game_speed(0.95, self.level)
 		elif ai_settings.scoring == 1:
 			if self.score < 40:
 				self.level = int(self.score/10)+1
