@@ -1,7 +1,8 @@
+import time
+
 class GameStats():
 	
 	def __init__(self):
-		self.high_score = 0
 		self.game_active = False
 		self.game_over = True
 		self.game_option = False
@@ -11,12 +12,23 @@ class GameStats():
 		
 	def init_dynamic_stats(self):
 		self.score = 0
+		self.line = 0
 		self.screen_score = 0
 		self.clear_score = 0
 		self.level = 1
 		
-		self.init_combo_stats()
+		self.get_high_score()
 		
+		self.init_combo_stats()
+
+	def get_high_score(self):
+		filename = 'high_score.txt'
+		
+		with open(filename, 'r') as file_object:
+			lines = file_object.readlines()
+			
+		self.high_score = int(lines[0])
+
 	def init_combo_stats(self):
 		self.in_combo = False
 		self.combo = 1
@@ -31,12 +43,17 @@ class GameStats():
 			self.screen_score = screen_piece - (screen_piece%10)
 			if full_row > 0:
 				self.clear_score += int((1.5*full_row-0.5)*10*10*\
-					self.combo*self.level)
+					self.combo*self.level*(int(self.level/10)+1))
 			self.score = self.screen_score + self.clear_score
 
 	def update_high(self):
 		if self.score > self.high_score:
 			self.high_score = self.score
+			
+			filename = 'high_score.txt'
+			with open(filename, 'w') as file_object:
+				file_object.write(str(self.high_score)+'\n')
+				file_object.write(str(self.get_local_time()))
 		
 	def update_level(self, ai_settings):
 		if ai_settings.scoring == 0:
@@ -77,3 +94,6 @@ class GameStats():
 				self.level = int(self.score/50000)+20
 			ai_settings.update_game_speed(0.90, int(self.level/3))
 			
+	def get_local_time(self):
+		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+

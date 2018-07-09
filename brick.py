@@ -59,15 +59,13 @@ class Brick():
 	def get_piece_pos(self):
 		self.piece_pos.clear()
 		for piece in self.shape:
-			piece_x = piece[0] + self.x
-			piece_y = piece[1] + self.y
-			self.piece_pos.append((piece_x, piece_y))
+			self.piece_pos.append((piece[0]+self.x, piece[1]+self.y))
 					
 	def set_dir_key(self, ctrl=False):
 		self.moving_left = ctrl
 		self.moving_right = ctrl
 		self.moving_down = ctrl
-		self.rotating = ctrl		
+		self.rotating = ctrl		 
 		
 	def draw_brick(self):
 		for piece in self.piece_pos:
@@ -90,15 +88,9 @@ class Brick():
 					self.stats.game_over = True
 					self.stats.game_active = False
 					self.stats.game_status = True
-					print('Game over. Score:' +str(self.stats.score))
+					self.stats.update_high()
 			else:
 				self.set_pos(self.x, self.y+1)
-				if speed > 50:
-					int_pf = int(pygame.time.get_ticks()-self.tick)
-					data = str(pygame.time.get_ticks())+' '+str(int_pf)\
-						+' '+str(self.ai_settings.game_speed)
-					print(data)
-					
 				self.tick = pygame.time.get_ticks()
 				self.get_piece_pos()
 				self.if_touch()
@@ -219,14 +211,42 @@ class Brick():
 		self.b_screen.clear_screen()
 		self.update_pos()
 		self.brick_fall()
+		self.draw_phantom_brick()
 		self.draw_brick()
 		self.draw_fund()
 		
-	def write_in_data(self, data):
-		filename = 'test_data.txt'
-		
+	def write_in_data(self, filename, data):
 		with open(filename, 'a') as file_object:
 			file_object.write(str(data)+'\n')
 			
 	def get_local_time(self):
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+		
+	def get_phantom_brick(self):
+		pb_y = self.ai_settings.gs_height_p
+		pb_x = self.x
+		
+		while pb_y >= 0:
+			pb_piece_pos = []
+			for piece in self.shape:
+				pb_piece_pos.append((piece[0]+pb_x, piece[1]+pb_y))
+				
+			flag = True
+			for piece in pb_piece_pos:
+				if piece[1] >= self.fund.border_list[piece[0]]:
+					flag = False
+					break
+			
+			if flag:
+				self.pb_y = pb_y
+				self.pb_piece_pos = pb_piece_pos
+				break
+			else:
+				pb_y -= 1
+	
+	def draw_phantom_brick(self):
+		if self.ai_settings.fall_pos:
+			self.get_phantom_brick()
+			for piece in self.pb_piece_pos:
+				self.b_screen.set_pixel(piece[0], piece[1], True,
+					self.color, width=1)

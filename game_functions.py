@@ -20,7 +20,8 @@ def check_events(ai_settings, screen, brick, msg_b, first_button,
 					screen, brick, msg_b, first_button, second_button,
 					quit_button, option)
 		elif event.type == pygame.KEYDOWN:
-			check_keydown_events(event, ai_settings, screen, brick)
+			check_keydown_events(event, ai_settings, screen, brick,
+				msg_b)
 		elif event.type == pygame.KEYUP:
 			check_keyup_events(event, brick)
 			
@@ -34,7 +35,7 @@ def check_mouse_events(mouse_x, mouse_y, ai_settings, screen, brick,
 				brick.stats.game_active = not brick.stats.game_active
 				brick.stats.game_status = not brick.stats.game_status
 				msg_b.nb_screen.clear_screen()
-				ai_settings.hint = not ai_settings.hint
+				ai_settings.next_up = not ai_settings.next_up
 			elif brick.stats.game_over:
 				reset_game(ai_settings, screen, brick)
 	elif second_button.rect.collidepoint(mouse_x, mouse_y):
@@ -63,41 +64,45 @@ def check_mouse_events(mouse_x, mouse_y, ai_settings, screen, brick,
 				ai_settings.update_settings(int(button_i/2), button_i%2)
 				option.update_option(ai_settings)
 		
-def check_keydown_events(event, ai_settings, screen, brick):
+def check_keydown_events(event, ai_settings, screen, brick, msg_b):
 	if event.key == pygame.K_q:
-		sys.exit()
+		if not brick.stats.game_active:
+			sys.exit()
 	elif event.key == pygame.K_RETURN:
 		if not brick.stats.game_over:
 			brick.stats.game_active = not brick.stats.game_active
+			brick.stats.game_status = not brick.stats.game_status
+			msg_b.nb_screen.clear_screen()
+			ai_settings.next_up = not ai_settings.next_up
 		elif brick.stats.game_over:
 			reset_game(ai_settings, screen, brick)
 	elif brick.stats.game_active:
 		if event.key == pygame.K_SPACE:
 			brick.free_fall = True
 		elif not brick.free_fall:
-			if event.key == pygame.K_LEFT:
+			if event.key == pygame.K_LEFT or event.key == pygame.K_a:
 				brick.moving_left = True
-			elif event.key == pygame.K_RIGHT:
+			elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
 				brick.moving_right = True
-			elif event.key == pygame.K_DOWN:
+			elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
 				brick.moving_down = True
-			elif event.key == pygame.K_UP:
+			elif event.key == pygame.K_UP or event.key == pygame.K_w:
 				brick.rotating = True
 		
 def check_keyup_events(event, brick):
-	if event.key == pygame.K_LEFT:
+	if event.key == pygame.K_LEFT or event.key == pygame.K_a:
 		brick.moving_left = False
 		brick.moving_cnt =\
 			brick.ai_settings.ctl_rotating_speed
-	elif event.key == pygame.K_RIGHT:
+	elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
 		brick.moving_right = False
 		brick.moving_cnt =\
 			brick.ai_settings.ctl_rotating_speed
-	elif event.key == pygame.K_DOWN:
+	elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
 		brick.moving_down = False
 		brick.moving_cnt =\
 			brick.ai_settings.ctl_rotating_speed
-	if event.key == pygame.K_UP:
+	elif event.key == pygame.K_UP or event.key == pygame.K_w:
 		brick.rotating = False
 		brick.moving_cnt =\
 			brick.ai_settings.ctl_rotating_speed
@@ -206,9 +211,7 @@ def draw_next_brick_frame(ai_settings, screen):
 	b_line.bottom = l_line.bottom
 	pygame.draw.rect(screen, ai_settings.frame_color, b_line)
 
-def write_in_data(data):
-	filename = 'test_data.txt'
-		
+def write_in_data(filename, data):
 	with open(filename, 'a') as file_object:
 		file_object.write(str(data)+'\n')
 		

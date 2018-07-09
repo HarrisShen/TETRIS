@@ -23,8 +23,8 @@ class BigScreen():
 			
 	def init_pixel_list(self):
 		self.pixel_list = []
-		for x_index in range(self.width_pixel):
-			for y_index in range(self.height_pixel):
+		for y_index in range(self.height_pixel):
+			for x_index in range(self.width_pixel):
 				new_pixel = BigPixel(self.ai_settings, self.screen)
 				new_pixel.set_O_pos(self.pos)
 				new_pixel.set_pos((x_index, y_index))
@@ -34,7 +34,7 @@ class BigScreen():
 	def p_index(self, x=0, y=0):
 		return x + y*self.width_pixel
 		
-	def set_pixel(self, x=0, y=0, if_show=False, color=(255,255,255)):
+	def set_pixel(self, x=0, y=0, if_show=False, color=(255,255,255), width=0):
 		if x < self.width_pixel and y < self.height_pixel and\
 			x >= 0 and y >= 0:
 			new_pixel = BigPixel(self.ai_settings, self.screen)
@@ -43,6 +43,7 @@ class BigScreen():
 			new_pixel.get_real_pos()
 			new_pixel.show = if_show
 			new_pixel.set_color(color)
+			new_pixel.set_width(width)
 			self.pixel_list[self.p_index(x,y)] = new_pixel
 	
 	def draw_screen(self):

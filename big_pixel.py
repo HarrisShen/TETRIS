@@ -7,6 +7,7 @@ class BigPixel():
 		self.screen = screen
 		
 		self.size = ai_settings.pixel_size
+		self.set_width()
 		self.show = False
 		self.set_color()
 		# O_pos is in real pixels
@@ -16,6 +17,9 @@ class BigPixel():
 		
 		self.get_real_pos()
 			
+	def set_width(self, width=0):
+		self.width = width
+		
 	def set_pos(self, pos=(0,0)):
 		self.pos = pos
 		self.pos_x = pos[0]
@@ -38,4 +42,4 @@ class BigPixel():
 		self.rect = pygame.Rect(self.real_x, self.real_y, self.size, 
 			self.size)		
 		if self.show:
-			pygame.draw.rect(self.screen, self.color, self.rect)		
+			pygame.draw.rect(self.screen, self.color, self.rect, self.width)		

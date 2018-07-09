@@ -16,17 +16,33 @@ class Foundation():
 	
 	def create_new(self):
 		self.piece_list = []
+		
+		self.border_list = []
+		for i in range(self.x_max):
+			self.border_list.append(self.y_max)
+			
 		self.color_list = {}		
 	
 	def add_pieces(self, piece_l=[], piece_color=(255,255,255)):
 		self.piece_list += piece_l
+		
 		for piece in piece_l:
 			self.color_list[piece] = piece_color
+			if self.border_list[piece[0]] > piece[1]:
+				self.border_list[piece[0]] = piece[1]
+				
+		print(self.border_list)
 		
 	def clear_full(self):
 		# detect full rows and clear them
 		new_piece_list = []
+		
+		new_border_list = []
+		for i in range(self.x_max):
+			new_border_list.append(self.y_max)
+			
 		new_color_list = {}
+		
 		full_row_num = 0
 		row_index = self.y_max-1
 		while row_index >= 0 :
@@ -43,14 +59,24 @@ class Foundation():
 						new_piece_list.append(new_piece)
 						new_color_list[new_piece] =\
 							self.color_list[piece]
+						if new_piece[1] < new_border_list[new_piece[0]]:
+							new_border_list[new_piece[0]] = new_piece[1]
 					elif piece[1] > row_index:
 						new_piece_list.append(piece)
 						new_color_list[piece] = self.color_list[piece]
+						if piece[1] < new_border_list[piece[0]]:
+							new_border_list[piece[0]] = piece[1]
 				self.piece_list = new_piece_list
 				new_piece_list = []
+				self.border_list = new_border_list
+				new_border_list = []
+				for i in range(self.x_max):
+					new_border_list.append(self.y_max)
+				print(self.border_list)
 				self.color_list = new_color_list
 				new_color_list = {}
 				full_row_num += 1
+				self.stats.line += 1
 				row_index += 1
 			row_index -= 1
 		if full_row_num == 0:
@@ -62,7 +88,6 @@ class Foundation():
 				self.stats.in_combo = True
 		self.stats.update_score(self.ai_settings, full_row_num,
 			len(self.piece_list))
-		self.stats.update_high()
 		self.stats.update_level(self.ai_settings)
 					
 	def draw_self(self):

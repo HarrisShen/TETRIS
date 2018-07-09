@@ -20,7 +20,7 @@ class Option():
 		
 		self.top = 15
 		
-		self.title = ['Difficulty', 'Scoring', 'Coloring', 'Hint']
+		self.title = ['Difficulty', 'Scoring', 'Coloring', 'Next-up', 'Fall-pos']
 		
 		self.text = ai_settings.get_option_text()
 		
@@ -28,10 +28,11 @@ class Option():
 		
 		self.cube = []
 		
-		#	'Difficulty': ['easy', 'medium', 'hard', 'hell'],
-		#	'Scoring': ['simple', 'combo', 'multiple'],
-		#	'Coloring': ['on', 'off'],
-		#	'Hint': ['on', 'off']
+		#	'Difficulty': ['easy', 'medium', 'hard', 'hell']
+		#	'Scoring': ['simple', 'combo', 'multiple']
+		#	'Coloring': ['on', 'off']
+		#	'Next-up': ['on', 'off']
+		#	'Fall-pos': ['on', 'off']
 		
 	def draw_text(self, text_list, top, get_center=False):
 		next_top = top

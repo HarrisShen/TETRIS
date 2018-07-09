@@ -36,18 +36,20 @@ class Settings():
 		self.rotate_list = [0,1,-1,0]	
 		
 		self.dif = 0
-		self.speed_list = [1000, 850, 550, 300]
+		self.speed_list = [1000, 800, 550, 320]
 		self.dif_list = ['easy', 'medium', 'hard', 'hell']
 		self.dif_str = self.dif_list[self.dif]
 		
-		self.hint_ctrl = True
+		self.next_up_ctrl = True
+		self.fall_pos_ctrl = True
 		
 		self.init_dynamic_settings()
 		
 		self.acc_factor = 0.85
 		self.game_ff_speed = 30
+		self.game_speed_limit = 280
 		self.ctl_rotating_speed = 240
-		self.ctl_moving_speed = 170	
+		self.ctl_moving_speed = 120	
 		
 		self.scoring = 2
 		self.scor_list = ['simple', 'combo', 'multiple']
@@ -89,10 +91,14 @@ class Settings():
 			
 	def init_dynamic_settings(self):
 		self.init_game_speed()
-		if self.hint_ctrl:
-			self.hint = True
+		if self.next_up_ctrl:
+			self.next_up = True
 		else:
-			self.hint = False
+			self.next_up = False
+		if self.fall_pos_ctrl:
+			self.fall_pos = True
+		else:
+			self.fall_pos = False
 		
 	def init_game_speed(self):
 		self.game_speed_first = self.speed_list[self.dif]
@@ -104,7 +110,10 @@ class Settings():
 		if acc_factor != 1:
 			self.acc_factor = acc_factor
 		new_speed = int(new_speed * (self.acc_factor ** multi_factor))
-		self.game_speed = new_speed
+		if new_speed > self.game_speed_limit:
+			self.game_speed = new_speed
+		elif new_speed <= self.game_speed_limit:
+			self.game_speed = self.game_speed_limit
 		
 	def get_option_text(self):
 		option_text = [self.dif_str, self.scor_str]
@@ -112,7 +121,11 @@ class Settings():
 			option_text.append('on')
 		else:
 			option_text.append('off')
-		if self.hint_ctrl:
+		if self.next_up_ctrl:
+			option_text.append('on')
+		else:
+			option_text.append('off')
+		if self.fall_pos_ctrl:
 			option_text.append('on')
 		else:
 			option_text.append('off')
@@ -129,18 +142,10 @@ class Settings():
 				if self.dif > 3:
 					self.dif = 0
 			self.dif_str = self.dif_list[self.dif]
-		elif item_i == 1:
-			if status_i == 0:
-				self.scoring -= 1
-				if self.scoring < 0:
-					self.scoring = 2
-			elif status_i == 1:
-				self.scoring += 1
-				if self.scoring > 2:
-					self.scoring = 0
-			self.scor_str = self.scor_list[self.scoring]
 		elif item_i == 2:
 			self.coloring = not self.coloring
 			self.init_color()
 		elif item_i == 3:
-			self.hint_ctrl = not self.hint_ctrl
+			self.next_up_ctrl = not self.next_up_ctrl
+		elif item_i == 4:
+			self.fall_pos_ctrl = not self.fall_pos_ctrl
