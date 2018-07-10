@@ -20,7 +20,12 @@ class Option():
 		
 		self.top = 15
 		
-		self.title = ['Difficulty', 'Scoring', 'Coloring', 'Next-up', 'Fall-pos']
+		self.title = [
+			'Difficulty',
+			'Scoring',
+			'Coloring',
+			'Next-up',
+			'Fall-pos']
 		
 		self.text = ai_settings.get_option_text()
 		

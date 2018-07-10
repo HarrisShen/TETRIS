@@ -31,7 +31,7 @@ def run_game():
 	
 	msg_b = MsgBoard(ai_settings, screen, stats, brick, clock)
 	
-	first_button = Button(ai_settings, screen, stats, [], 170,
+	first_button = Button(ai_settings, screen, stats, [], 180,
 		ai_settings.ms_centerx)
 	second_button = Button(ai_settings, screen, stats, [], 0,
 		ai_settings.ms_centerx)

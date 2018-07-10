@@ -53,6 +53,7 @@ class GameStats():
 			filename = 'high_score.txt'
 			with open(filename, 'w') as file_object:
 				file_object.write(str(self.high_score)+'\n')
+				file_object.write(str(self.line)+'\n')
 				file_object.write(str(self.get_local_time()))
 		
 	def update_level(self, ai_settings):

@@ -20,7 +20,7 @@ class MsgBoard():
 		self.text_font = pygame.font.SysFont('lucidaconsole', 15,
 			bold = True)
 			
-		self.info_pos = (152,90)
+		self.info_pos = (0,100)
 		self.info_x = self.info_pos[0] 
 		self.info_y = self.info_pos[1]
 		
@@ -31,7 +31,7 @@ class MsgBoard():
 				
 	def init_nb_screen(self):
 		self.nb_screen = BigScreen(self.ai_settings, self.screen)
-		self.nb_screen.set_screen_pos((185,10))
+		self.nb_screen.set_screen_pos((195,20))
 		self.nb_screen.set_screen_scale(6,6)
 		
 	def show_nxt_brick(self, ai_settings):

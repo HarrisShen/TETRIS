@@ -94,10 +94,12 @@ def check_keyup_events(event, brick):
 		brick.moving_left = False
 		brick.moving_cnt =\
 			brick.ai_settings.ctl_rotating_speed
+		brick.holding_cnt = -1
 	elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
 		brick.moving_right = False
 		brick.moving_cnt =\
 			brick.ai_settings.ctl_rotating_speed
+		brick.holding_cnt = -1
 	elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
 		brick.moving_down = False
 		brick.moving_cnt =\
@@ -106,6 +108,7 @@ def check_keyup_events(event, brick):
 		brick.rotating = False
 		brick.moving_cnt =\
 			brick.ai_settings.ctl_rotating_speed
+		brick.holding_cnt = -1
 											
 def update_screen(ai_settings, screen, b_screen, brick, mb,
 	first_button, second_button, quit_button, stat_button, option):
@@ -184,19 +187,19 @@ def reset_game(ai_settings, screen, brick):
 	brick.stats.game_status = False
 	
 def draw_main_frame(ai_settings, screen):
-	t_line = pygame.Rect(4, 4, 139, 3)
+	t_line = pygame.Rect(14, 14, 139, 3)
 	pygame.draw.rect(screen, ai_settings.frame_color, t_line)
-	b_line = pygame.Rect(4, 270, 139, 3)
+	b_line = pygame.Rect(14, 280, 139, 3)
 	pygame.draw.rect(screen, ai_settings.frame_color, b_line)
-	l_line = pygame.Rect(4, 4, 3, 269)
+	l_line = pygame.Rect(14, 14, 3, 269)
 	pygame.draw.rect(screen, ai_settings.frame_color, l_line)
-	r_line = pygame.Rect(140, 4 , 3, 269)
+	r_line = pygame.Rect(150, 14, 3, 269)
 	pygame.draw.rect(screen, ai_settings.frame_color, r_line)
 
 def draw_next_brick_frame(ai_settings, screen):
 	t_line = pygame.Rect(0, 0, 100, 3)
-	t_line.top = 4
-	t_line.centerx = 217
+	t_line.top = 14
+	t_line.centerx = 227
 	pygame.draw.rect(screen, ai_settings.frame_color, t_line)
 	l_line = pygame.Rect(0, 0, 3, 85)
 	l_line.top = t_line.top

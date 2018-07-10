@@ -22,8 +22,6 @@ class Brick():
 		self.stats = stats
 		self.clock = clock
 		self.fund = fund
-		
-		self.tick = 0
 
 		self.nxt_shape_num = random.randint(0,6)
 		self.create_new()
@@ -49,7 +47,8 @@ class Brick():
 		self.free_fall = False
 		
 		self.set_dir_key()
-		self.moving_cnt = self.ai_settings.ctl_rotating_speed		
+		self.moving_cnt = self.ai_settings.ctl_rotating_speed	
+		self.holding_cnt = -1	
 		
 	def set_pos(self, x=4, y=0):
 		self.pos = (x, y)
@@ -91,7 +90,6 @@ class Brick():
 					self.stats.update_high()
 			else:
 				self.set_pos(self.x, self.y+1)
-				self.tick = pygame.time.get_ticks()
 				self.get_piece_pos()
 				self.if_touch()
 			
@@ -167,37 +165,57 @@ class Brick():
 	def update_pos(self):
 		if self.moving_left:
 			if self.moving_cnt >= self.ai_settings.ctl_moving_speed:
-				if not self.touch_side():
-					self.set_pos(self.x-1, self.y)
-					self.get_piece_pos()
-					self.if_touch()
+				if self.holding_cnt > 0:
+					self.holding_cnt -= 1
+				elif self.holding_cnt <= 0:
+					if not self.touch_side():
+						self.set_pos(self.x-1, self.y)
+						self.get_piece_pos()
+						self.if_touch()
+					if self.holding_cnt == -1:
+						self.holding_cnt = 4
 				self.moving_cnt = 0
 			else:
 				self.moving_cnt += 1
 		if self.moving_right:
 			if self.moving_cnt >= self.ai_settings.ctl_moving_speed:
-				if not self.touch_side(False):
-					self.set_pos(self.x+1, self.y)
-					self.get_piece_pos()
-					self.if_touch()
+				if self.holding_cnt > 0:
+					self.holding_cnt -= 1
+				elif self.holding_cnt <= 0:
+					if not self.touch_side(left_side=False):
+						self.set_pos(self.x+1, self.y)
+						self.get_piece_pos()
+						self.if_touch()
+					if self.holding_cnt == -1:
+						self.holding_cnt = 4
 				self.moving_cnt = 0
 			else:
 				self.moving_cnt += 1
 		if self.moving_down:
 			if self.moving_cnt >= self.ai_settings.ctl_moving_speed:
-				self.if_touch()
-				if not self.touch:
-					self.set_pos(self.x, self.y+1)
-					self.get_piece_pos()
+				if self.holding_cnt > 0:
+					self.holding_cnt -= 1
+				elif self.holding_cnt <= 0:
 					self.if_touch()
+					if not self.touch:
+						self.set_pos(self.x, self.y+1)
+						self.get_piece_pos()
+						self.if_touch()
+					if self.holding_cnt == -1:
+						self.holding_cnt = 2
 				self.moving_cnt = 0
 			else:
-				self.moving_cnt += 1								
+				self.moving_cnt += 1			
 		if self.rotating:
 			if self.moving_cnt == self.ai_settings.ctl_rotating_speed:
-				if self.rotatable():
-					self.rotate()
-					self.if_touch()
+				if self.holding_cnt > 0:
+					self.holding_cnt -= 1
+				elif self.holding_cnt <= 0:
+					if self.rotatable():
+						self.rotate()
+						self.if_touch()
+					if self.holding_cnt == -1:
+						self.holding_cnt = 2
 				self.moving_cnt = 0
 			else:
 				self.moving_cnt += 1
@@ -214,35 +232,40 @@ class Brick():
 		self.draw_phantom_brick()
 		self.draw_brick()
 		self.draw_fund()
-		
-	def write_in_data(self, filename, data):
-		with open(filename, 'a') as file_object:
-			file_object.write(str(data)+'\n')
 			
 	def get_local_time(self):
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 		
 	def get_phantom_brick(self):
-		pb_y = self.ai_settings.gs_height_p
+		pb_y = self.y
 		pb_x = self.x
 		
-		while pb_y >= 0:
+		while pb_y <= self.ai_settings.gs_height_p:
 			pb_piece_pos = []
 			for piece in self.shape:
 				pb_piece_pos.append((piece[0]+pb_x, piece[1]+pb_y))
 				
 			flag = True
 			for piece in pb_piece_pos:
-				if piece[1] >= self.fund.border_list[piece[0]]:
-					flag = False
-					break
+				if self.fund.column_list[piece[0]]:
+					if piece[1] in self.fund.column_list[piece[0]]:
+						flag = False
+						break
+				else:
+					if piece[1] >= self.ai_settings.gs_height_p:
+						flag = False
+						break
 			
 			if flag:
-				self.pb_y = pb_y
-				self.pb_piece_pos = pb_piece_pos
-				break
+				pb_y += 1
 			else:
 				pb_y -= 1
+				self.pb_y = pb_y
+				self.pb_piece_pos = []
+				for piece in self.shape:
+					self.pb_piece_pos.append((piece[0]+pb_x,
+						piece[1]+pb_y))
+				break
 	
 	def draw_phantom_brick(self):
 		if self.ai_settings.fall_pos:

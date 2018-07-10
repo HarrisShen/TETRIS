@@ -34,7 +34,8 @@ class BigScreen():
 	def p_index(self, x=0, y=0):
 		return x + y*self.width_pixel
 		
-	def set_pixel(self, x=0, y=0, if_show=False, color=(255,255,255), width=0):
+	def set_pixel(self, x=0, y=0, if_show=False, color=(255,255,255),
+		width=0):
 		if x < self.width_pixel and y < self.height_pixel and\
 			x >= 0 and y >= 0:
 			new_pixel = BigPixel(self.ai_settings, self.screen)

@@ -42,4 +42,5 @@ class BigPixel():
 		self.rect = pygame.Rect(self.real_x, self.real_y, self.size, 
 			self.size)		
 		if self.show:
-			pygame.draw.rect(self.screen, self.color, self.rect, self.width)		
+			pygame.draw.rect(self.screen, self.color, self.rect,
+				self.width)		

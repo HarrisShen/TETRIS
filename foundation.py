@@ -17,9 +17,9 @@ class Foundation():
 	def create_new(self):
 		self.piece_list = []
 		
-		self.border_list = []
-		for i in range(self.x_max):
-			self.border_list.append(self.y_max)
+		self.column_list = []
+		for x in range(self.x_max):
+			self.column_list.append([])
 			
 		self.color_list = {}		
 	
@@ -28,18 +28,15 @@ class Foundation():
 		
 		for piece in piece_l:
 			self.color_list[piece] = piece_color
-			if self.border_list[piece[0]] > piece[1]:
-				self.border_list[piece[0]] = piece[1]
-				
-		print(self.border_list)
+			self.column_list[piece[0]].append(piece[1])
 		
 	def clear_full(self):
 		# detect full rows and clear them
 		new_piece_list = []
 		
-		new_border_list = []
+		new_column_list = []
 		for i in range(self.x_max):
-			new_border_list.append(self.y_max)
+			new_column_list.append([])
 			
 		new_color_list = {}
 		
@@ -59,20 +56,17 @@ class Foundation():
 						new_piece_list.append(new_piece)
 						new_color_list[new_piece] =\
 							self.color_list[piece]
-						if new_piece[1] < new_border_list[new_piece[0]]:
-							new_border_list[new_piece[0]] = new_piece[1]
+						new_column_list[new_piece[0]].append(new_piece[1])
 					elif piece[1] > row_index:
 						new_piece_list.append(piece)
 						new_color_list[piece] = self.color_list[piece]
-						if piece[1] < new_border_list[piece[0]]:
-							new_border_list[piece[0]] = piece[1]
+						new_column_list[piece[0]].append(piece[1])
 				self.piece_list = new_piece_list
 				new_piece_list = []
-				self.border_list = new_border_list
-				new_border_list = []
+				self.column_list = new_column_list
+				new_column_list = []
 				for i in range(self.x_max):
-					new_border_list.append(self.y_max)
-				print(self.border_list)
+					new_column_list.append([])
 				self.color_list = new_color_list
 				new_color_list = {}
 				full_row_num += 1

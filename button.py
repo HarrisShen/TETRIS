@@ -2,7 +2,8 @@ import pygame
 
 class Button():
 
-	def __init__(self, ai_settings, screen, stats, msg_list, top, centerx):
+	def __init__(self, ai_settings, screen, stats, msg_list, top,
+		centerx):
 		self.ai_settings = ai_settings
 		self.screen = screen
 		self.stats = stats
