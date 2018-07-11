@@ -47,6 +47,7 @@ class Settings():
 		
 		self.acc_factor = 0.85
 		self.game_ff_speed = 30
+		self.game_cf_speed = 50
 		self.game_speed_limit = 280
 		self.ctl_rotating_speed = 240
 		self.ctl_moving_speed = 120	

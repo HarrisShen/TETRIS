@@ -17,7 +17,6 @@ class Brick():
 		self.screen = screen
 		
 		self.b_screen = b_screen
-		self.set_screen()
 		
 		self.stats = stats
 		self.clock = clock
@@ -25,20 +24,14 @@ class Brick():
 
 		self.nxt_shape_num = random.randint(0,6)
 		self.create_new()
-	
-	def	set_screen(self):
-		self.b_screen.set_screen_pos(self.ai_settings.gs_pixel_o)
-		self.b_screen.set_screen_scale(self.ai_settings.gs_width_p,
-			self.ai_settings.gs_height_p)
 
 	def create_new(self):
 		self.set_pos()
-		# list of positions of all pieces from one block
-		self.piece_pos = []
 		self.shape_num = self.nxt_shape_num
 		self.nxt_shape_num = random.randint(0,6)
 		self.shape = self.ai_settings.shape_list[self.shape_num]
 		self.color = self.ai_settings.color_list[self.shape_num]
+		# generate a list of positions of all pieces from one block
 		self.get_piece_pos()
 		
 		self.cnt = 0
@@ -46,9 +39,11 @@ class Brick():
 		
 		self.free_fall = False
 		
-		self.set_dir_key()
+		self.init_dir_key()
 		self.moving_cnt = self.ai_settings.ctl_rotating_speed	
-		self.holding_cnt = -1	
+		self.holding_cnt = -1
+		
+		self.get_phantom_brick()
 		
 	def set_pos(self, x=4, y=0):
 		self.pos = (x, y)
@@ -56,11 +51,11 @@ class Brick():
 		self.y = self.pos[1]
 		
 	def get_piece_pos(self):
-		self.piece_pos.clear()
+		self.piece_pos = []
 		for piece in self.shape:
 			self.piece_pos.append((piece[0]+self.x, piece[1]+self.y))
 					
-	def set_dir_key(self, ctrl=False):
+	def init_dir_key(self, ctrl=False):
 		self.moving_left = ctrl
 		self.moving_right = ctrl
 		self.moving_down = ctrl
@@ -70,32 +65,6 @@ class Brick():
 		for piece in self.piece_pos:
 			self.b_screen.set_pixel(piece[0], piece[1], True,
 				self.color)
-			
-	def brick_fall(self):
-		adj_factor = self.clock.get_fps()/1000
-		if self.free_fall:
-			speed = self.ai_settings.game_ff_speed*adj_factor
-		else:
-			speed = self.ai_settings.game_speed*adj_factor
-		if self.cnt >= speed:
-			if self.touch:
-				self.fund.add_pieces(self.piece_pos, self.color)
-				self.fund.clear_full()
-				self.create_new()
-				self.if_touch()
-				if self.if_touch_base():
-					self.stats.game_over = True
-					self.stats.game_active = False
-					self.stats.game_status = True
-					self.stats.update_high()
-			else:
-				self.set_pos(self.x, self.y+1)
-				self.get_piece_pos()
-				self.if_touch()
-			
-			self.cnt = 0
-		elif self.cnt < speed:
-			self.cnt += 1
 	
 	def if_touch_base(self):
 		flag = False
@@ -161,101 +130,24 @@ class Brick():
 				if not flag:
 					break
 		return flag
-
-	def update_pos(self):
-		if self.moving_left:
-			if self.moving_cnt >= self.ai_settings.ctl_moving_speed:
-				if self.holding_cnt > 0:
-					self.holding_cnt -= 1
-				elif self.holding_cnt <= 0:
-					if not self.touch_side():
-						self.set_pos(self.x-1, self.y)
-						self.get_piece_pos()
-						self.if_touch()
-					if self.holding_cnt == -1:
-						self.holding_cnt = 4
-				self.moving_cnt = 0
-			else:
-				self.moving_cnt += 1
-		if self.moving_right:
-			if self.moving_cnt >= self.ai_settings.ctl_moving_speed:
-				if self.holding_cnt > 0:
-					self.holding_cnt -= 1
-				elif self.holding_cnt <= 0:
-					if not self.touch_side(left_side=False):
-						self.set_pos(self.x+1, self.y)
-						self.get_piece_pos()
-						self.if_touch()
-					if self.holding_cnt == -1:
-						self.holding_cnt = 4
-				self.moving_cnt = 0
-			else:
-				self.moving_cnt += 1
-		if self.moving_down:
-			if self.moving_cnt >= self.ai_settings.ctl_moving_speed:
-				if self.holding_cnt > 0:
-					self.holding_cnt -= 1
-				elif self.holding_cnt <= 0:
-					self.if_touch()
-					if not self.touch:
-						self.set_pos(self.x, self.y+1)
-						self.get_piece_pos()
-						self.if_touch()
-					if self.holding_cnt == -1:
-						self.holding_cnt = 2
-				self.moving_cnt = 0
-			else:
-				self.moving_cnt += 1			
-		if self.rotating:
-			if self.moving_cnt == self.ai_settings.ctl_rotating_speed:
-				if self.holding_cnt > 0:
-					self.holding_cnt -= 1
-				elif self.holding_cnt <= 0:
-					if self.rotatable():
-						self.rotate()
-						self.if_touch()
-					if self.holding_cnt == -1:
-						self.holding_cnt = 2
-				self.moving_cnt = 0
-			else:
-				self.moving_cnt += 1
-				
-	def draw_fund(self):
-		for base_piece in self.fund.piece_list:
-			self.b_screen.set_pixel(base_piece[0], base_piece[1], 
-				True, self.fund.color_list[base_piece])
-			
-	def update(self):
-		self.b_screen.clear_screen()
-		self.update_pos()
-		self.brick_fall()
-		self.draw_phantom_brick()
-		self.draw_brick()
-		self.draw_fund()
-			
-	def get_local_time(self):
-		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 		
 	def get_phantom_brick(self):
 		pb_y = self.y
-		pb_x = self.x
 		
 		while pb_y <= self.ai_settings.gs_height_p:
 			pb_piece_pos = []
 			for piece in self.shape:
-				pb_piece_pos.append((piece[0]+pb_x, piece[1]+pb_y))
+				pb_piece_pos.append((piece[0]+self.x, piece[1]+pb_y))
 				
 			flag = True
 			for piece in pb_piece_pos:
-				if self.fund.column_list[piece[0]]:
-					if piece[1] in self.fund.column_list[piece[0]]:
-						flag = False
-						break
-				else:
-					if piece[1] >= self.ai_settings.gs_height_p:
-						flag = False
-						break
-			
+				if piece[1] in self.fund.column_list[piece[0]]:
+					flag = False
+					break
+				elif piece[1] >= self.ai_settings.gs_height_p:
+					flag = False
+					break
+
 			if flag:
 				pb_y += 1
 			else:
@@ -263,13 +155,12 @@ class Brick():
 				self.pb_y = pb_y
 				self.pb_piece_pos = []
 				for piece in self.shape:
-					self.pb_piece_pos.append((piece[0]+pb_x,
+					self.pb_piece_pos.append((piece[0]+self.x,
 						piece[1]+pb_y))
 				break
-	
+
 	def draw_phantom_brick(self):
 		if self.ai_settings.fall_pos:
-			self.get_phantom_brick()
 			for piece in self.pb_piece_pos:
 				self.b_screen.set_pixel(piece[0], piece[1], True,
 					self.color, width=1)
