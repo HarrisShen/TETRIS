@@ -24,8 +24,13 @@ class GameStats():
 	def get_high_score(self):
 		filename = 'high_score.txt'
 		
-		with open(filename, 'r') as file_object:
-			lines = file_object.readlines()
+		try:
+			with open(filename, 'r') as file_object:
+				lines = file_object.readlines()
+		except FileNotFoundError:
+			with open(filename, 'w+') as file_object:
+				file_object.write('0\n')
+			lines = ['0']
 			
 		self.high_score = int(lines[0])
 
